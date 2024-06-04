@@ -1,0 +1,137 @@
+@startuml RPG Game
+
+class App {
+    +main(String[] args)
+}
+
+class AssetSetter {
+    -GamePanel gp
+    +AssetSetter(GamePanel gp)
+    +setObject()
+}
+
+class CollisionChecker {
+    -GamePanel gp
+    +CollisionChecker(GamePanel gp)
+    +checkTile(Entity entity)
+}
+
+class GamePanel {
+    +final int originalTileSize
+    +final int scale
+    +final int tileSize
+    +final int maxScreenCol
+    +final int maxScreenRow
+    +final int screenWidth
+    +final int screenHeight
+    +int FPS
+    +KeyHandler keyH
+    +Thread gameThread
+    +CollisionChecker cChecker
+    +AssetSetter aSetter
+    +TileManager tileM
+    +GamePanel()
+    +startGameThread()
+    +run()
+    +update()
+    +paintComponent(Graphics g)
+}
+
+class KeyHandler {
+    +boolean upPressed
+    +boolean downPressed
+    +boolean leftPressed
+    +boolean rightPressed
+    +keyTyped(KeyEvent e)
+    +keyPressed(KeyEvent e)
+    +keyReleased(KeyEvent e)
+}
+
+class UI {
+    -GamePanel gp
+    -Font arial_40
+    +boolean messageOn
+    +String message
+    +int messageCounter
+    +UI(GamePanel gp)
+    +showMessage(String text)
+    +draw(Graphics2D g2)
+}
+
+class Tile {
+    +BufferedImage image
+    +boolean collision
+}
+
+class TileManager {
+    -GamePanel gp
+    +Tile[] tile
+    +int[][] mapTileNum
+    +TileManager(GamePanel gp)
+    +getTileImage()
+    +loadMap(String filePath)
+    +draw(Graphics2D g2)
+}
+
+class Chest extends SuperObject {
+    +Chest()
+}
+
+class Door extends SuperObject {
+    +Door()
+}
+
+class Flash extends SuperObject {
+    +Flash()
+}
+
+class Key extends SuperObject {
+    +Key()
+}
+
+class SuperObject {
+    +BufferedImage image
+    +String name
+    +boolean collision
+    +int worldX
+    +int worldY
+    +draw(Graphics2D g2, GamePanel gp)
+}
+
+class Entity {
+    +int worldX
+    +int worldY
+    +int speed
+    +boolean collisionOn
+    +String direction
+    +Rectangle solidArea
+}
+
+class Player extends Entity {
+    +Player(GamePanel gp, KeyHandler keyH)
+    +update()
+    +draw(Graphics2D g2)
+}
+
+App --> GamePanel
+AssetSetter -left-> GamePanel
+CollisionChecker --> GamePanel
+GamePanel --> CollisionChecker
+GamePanel --> KeyHandler
+GamePanel -left-> AssetSetter
+GamePanel -left-> TileManager
+GamePanel -up-> UI
+Player -left-> GamePanel
+Player --> KeyHandler
+Entity <|-- Player
+KeyHandler <|-- Key
+TileManager --> Tile
+TileManager --> GamePanel
+Tile <|-- TileManager
+SuperObject <|-- Chest
+SuperObject <|-- Door
+SuperObject <|-- Flash
+SuperObject <|-- Key
+AssetSetter --|> SuperObject
+
+@enduml
